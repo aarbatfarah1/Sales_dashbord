@@ -7,7 +7,7 @@ from streamlit_option_menu import option_menu
 import plotly.express as px
 
 
-st.set_page_config(page_title="FARAH", page_icon=":bar_chart:",layout="wide")
+st.set_page_config(page_title="Tableau de bord des ventes", page_icon="📊",layout="wide")
 
 # ---- HIDE STREAMLIT STYLE ----
 hide_st_style = """
@@ -23,7 +23,7 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # ---- MAINPAGE ----
-st.title(":bar_chart: Tableau de bord des ventes")
+st.title("📊 Tableau de bord des ventes")
 st.markdown("##")
 
 # Afficher le sélecteur de fichiers pour importer le fichier CSV
@@ -369,24 +369,24 @@ if uploaded_file is not None:
             selected = option_menu(
                 menu_title="Votre menu",
                 # menu_title=None,
-                options=["Home","Vue générale", "Vue selon les branches", "Vue selon les produits",
-                         "Vue selon le type de client", "Vue selon le temps"],
-                # icons=["", 📊, 📆],
-                menu_icon="cast",  # option
+                options=[" 🏠 Home"," 📈 Vue générale", " 🌳 Vue selon les branches", " 🛍️ Vue selon les produits",
+                         " 👥 Vue selon le type de client", " 📅 Vue selon le temps"],
+                icons=["🏠", "📊", "🌳", "🛍️", "👥", "📅"],
+                menu_icon=["home","bar_chart",], # option
                 default_index=0,  # option
             )
 
-        if selected == "Home":
+        if selected == " 🏠 Home":
             Home()
-        if selected == "Vue générale":
+        if selected == " 📈 Vue générale":
             Vue_generale()
-        if selected == "Vue selon les branches":
+        if selected == " 🌳 Vue selon les branches":
             Vue_selon_les_branches()
-        if selected == "Vue selon les produits":
+        if selected == " 🛍️ Vue selon les produits":
             Vue_selon_les_produits()
-        if selected == "Vue selon le type de client":
+        if selected == " 👥 Vue selon le type de client":
             Vue_selon_le_type_de_client()
-        if selected == "Vue selon le temps":
+        if selected == " 📅 Vue selon le temps":
             Vue_selon_le_temps()
     # print side bar
     sideBar()
@@ -415,7 +415,7 @@ text-align: center;
 }
 </style>
 <div class="footer">
-<p>Developed with  ❤ by Farah <a style='display: block; text-align: center;' href="https://www.heflin.dev/" target="_blank">Samir.s.s</a></p>
+<p>Developed with  ❤ by Farah <a style='display: block; text-align: center;' </p>
 </div>
 """
 st.markdown(footer, unsafe_allow_html=True)
