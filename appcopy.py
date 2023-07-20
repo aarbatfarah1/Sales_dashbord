@@ -443,28 +443,28 @@ if uploaded_file is not None:
     # sub_option = st.selectbox("Selectionner une sous-option",["Vue générale", "Vue selon les branches", "Vue selon les produits","Vue selon le type de client", "Vue selon le temps"])
     # st.markdown(f"<h1 style='font-weight: bold;'>{sub_option}</h1>", unsafe_allow_html=True)
 
-footer = """<style>
+#footer = """<style>
 
 
-a:hover,  a:active {
-color: red;
-background-color: transparent;
-text-decoration: underline;
-}
+# a:hover,  a:active {
+# color: red;
+# background-color: transparent;
+# text-decoration: underline;
+# }
 
-.footer {
-position: fixed;
-left: 0;
-height:5%;
-bottom: 0;
-width: 100%;
-background-color: #00172B;
-color: white;
-text-align: center;
-}
-</style>
-<div class="footer">
-<p>Developed with  ❤ by Farah <a style='display: block; text-align: center;' </p>
-</div>
-"""
-st.markdown(footer, unsafe_allow_html=True)
+# .footer {
+# position: fixed;
+# left: 0;
+# height:5%;
+# bottom: 0;
+# width: 100%;
+# background-color: #00172B;
+# color: white;
+# text-align: center;
+# }
+# </style>
+# <div class="footer">
+# <p>Developed with  ❤ by Farah <a style='display: block; text-align: center;' </p>
+# </div>
+# """
+# st.markdown(footer, unsafe_allow_html=True)
