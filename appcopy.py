@@ -10,7 +10,7 @@ from pandas_profiling import ProfileReport
 
 
 
-st.set_page_config(page_title="Tableau de bord des ventes", page_icon="📊",layout="wide")
+st.set_page_config(page_title="TAnalyse des Performances de Ventes", page_icon="📊",layout="wide")
 
 # ---- HIDE STREAMLIT STYLE ----
 hide_st_style = """
@@ -69,8 +69,8 @@ if uploaded_file is not None:
     def Home():
 
         with st.expander("📜 Données importées :"):
-            shwdata = st.multiselect('Filter :', df_selection.columns,
-                                     default=["Invoice ID", "City", "Customer type", "Gender", "Total"])
+            shwdata = st.multiselect('Filtrer :', df_selection.columns,
+                                     default=[ "City", "Customer type", "Gender", "Total", "Date"])
             st.dataframe(df_selection[shwdata], use_container_width=True)
 
         st.markdown("""---""")
@@ -225,7 +225,7 @@ if uploaded_file is not None:
         plt.close()
         # Display the chart in Streamlit
         st.pyplot(fig)
-        quote_text = "Les clients membres achètent la plupart de leurs produits de la branche C et le moins de la branche B tandis que les clients normaux achètent beaucoup de la branche A puis de la branche B, mais moins de la branche C."
+        quote_text = "Les clients membres achètent la plupart de leurs produits des 3 branches tandis que les clients normaux achètent plus de la branche A puis de la branche B, mais moins de la branche C."
         quote_color = "#FFFFFF"
         st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
 
@@ -340,10 +340,6 @@ if uploaded_file is not None:
         quote_text = "Les membres préfèrent acheter des articles en utilisant une carte de crédit et génèrent des ventes maximales d'environ 345 dollars, tandis que les clients normaux préfèrent faire leurs achats en espèces et génèrent des ventes maximales d'environ 330 dollars."
         quote_color = "#FFFFFF"
         st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
-
-
-
-
     def Vue_selon_le_temps():
         st.markdown("<h3 style='font-weight: bold;'>Ventes horaires:</h3>", unsafe_allow_html=True)
         st.write("")
@@ -396,27 +392,21 @@ if uploaded_file is not None:
         st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
     # Add an empty Markdown line to remove the space above the filter section
     # Add empty Markdown line to remove space above "Filtrez"
-    def pandas_report():
-        # Assuming 'sales' is your DataFrame
-        profile = ProfileReport(sales)
-        st.title("Rapport d'analyse")
-        st_profile_report(profile)
-        st.markdown("""---""")
 
     city = st.sidebar.multiselect(
-        "Selectionner la ville:",
+        "Séléctionner la ville:",
         options=sales["City"].unique(),
         default=sales["City"].unique()
     )
 
     customer_type = st.sidebar.multiselect(
-        "Selectionner le type de client:",
+        "Séléctionner le type de client:",
         options=sales["Customer type"].unique(),
         default=sales["Customer type"].unique(),
     )
 
     gender = st.sidebar.multiselect(
-        "Selectionner le genre:",
+        "Séléctionner le genre:",
         options=sales["Gender"].unique(),
         default=sales["Gender"].unique()
     )
@@ -428,14 +418,14 @@ if uploaded_file is not None:
             selected = option_menu(
                 menu_title="Votre menu",
                 # menu_title=None,
-                options=[" 🏠 Home", " 📈 Vue générale", " 🌳 Vue selon les branches", " 🛍️ Vue selon les produits",
-                         " 👥 Vue selon le type de client", " 📅 Vue selon le temps"," 📑 Rapport d'analyse"],
-                icons=["🏠", "📊", "🌳", "🛍️", "👥", "📅","📑"],
+                options=[" 🏠 Acceuil", " 📈 Vue générale", " 🌳 Vue selon les branches", " 🛍️ Vue selon les produits",
+                         " 👥 Vue selon le type de client", " 📅 Vue selon le temps",],
+                icons=["🏠", "📊", "🌳", "🛍️", "👥", "📅",],
                 menu_icon=["home", "bar_chart", ],  # option
                 default_index=0,  # option
             )
 
-        if selected == " 🏠 Home":
+        if selected == " 🏠 Acceuil":
             Home()
         if selected == " 📈 Vue générale":
             Vue_generale()
@@ -447,8 +437,6 @@ if uploaded_file is not None:
             Vue_selon_le_type_de_client()
         if selected == " 📅 Vue selon le temps":
             Vue_selon_le_temps()
-        if selected==" 📑 Rapport d'analyse":
-            pandas_report()
     # print side bar
     sideBar()
 
