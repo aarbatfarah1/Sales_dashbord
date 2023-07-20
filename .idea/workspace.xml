@@ -7,6 +7,7 @@
     <list default="true" id="3156b67a-a18f-474a-87ba-1af0ae10c14b" name="Changes" comment="sales dashboard">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/appcopy.py" beforeDir="false" afterPath="$PROJECT_DIR$/appcopy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,7 +149,7 @@
       <workItem from="1689713382695" duration="429000" />
       <workItem from="1689781550589" duration="9759000" />
       <workItem from="1689797340940" duration="492000" />
-      <workItem from="1689801534486" duration="8818000" />
+      <workItem from="1689801534486" duration="9187000" />
     </task>
     <servers />
   </component>

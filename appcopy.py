@@ -399,7 +399,7 @@ if uploaded_file is not None:
     def pandas_report():
         # Assuming 'sales' is your DataFrame
         profile = ProfileReport(sales)
-        st.title("Pandas Profiling Report")
+        st.title("Rapport d'analyse")
         st_profile_report(profile)
         st.markdown("""---""")
 
