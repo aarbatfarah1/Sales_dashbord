@@ -5,6 +5,9 @@ import streamlit as st
 import pandas as pd
 from streamlit_option_menu import option_menu
 import plotly.express as px
+from streamlit_pandas_profiling import st_profile_report
+from pandas_profiling import ProfileReport
+
 
 
 st.set_page_config(page_title="Tableau de bord des ventes", page_icon="📊",layout="wide")
@@ -57,6 +60,9 @@ if uploaded_file is not None:
     # Prétraitement des données
     sales_clean, data_corr = preprocess_data(sales)
 
+
+
+
     # Afficher les données prétraitées
     # st.write("Données prétraitées :", sales_clean)
     # st.write("Matrice de corrélation :", data_corr)
@@ -84,6 +90,9 @@ if uploaded_file is not None:
         with right_column:
             st.subheader("Ventes moyennes par transaction:")
             st.subheader(f"US $ {average_sale_by_transaction}")
+
+
+
     def Vue_generale():
         # SALES BY PRODUCT LINE [BAR CHART]
         sales_by_product_line = (
@@ -162,51 +171,80 @@ if uploaded_file is not None:
         st.pyplot(fig)
     def Vue_selon_les_branches():
         # Calculer la distribution des branches
-        st.markdown("<h3 style='font-weight: bold;'>La distribution des branches :</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='font-weight: bold;'>Distribution des branches :</h3>", unsafe_allow_html=True)
         branch = sales["Branch"].value_counts()
         # Créer le graphique en camembert
         fig, ax = plt.subplots(figsize=(12, 6))
         ax.pie(branch, labels=branch.index, autopct='%1.1f%%')
-        ax.set_title("Distribution des branches")
         st.pyplot(fig)
         st.markdown("""---""")
         st.markdown("<h3 style='font-weight: bold;'>Répartition des sexes par branche :</h3>", unsafe_allow_html=True)
         # Group the data by branch and gender
         grouped_data = sales.groupby(['Branch', 'Gender']).size()
-        # Unstack the data
-        unstacked_data = grouped_data.unstack(0)
-        # Plot the data
-        st.bar_chart(unstacked_data)
+        fig, ax = plt.subplots()
+        grouped_data.plot(kind='barh', ax=ax)
+        # Customize the plot
+        ax.set_xlabel('Count')
+        ax.set_ylabel('Branch - Gender')
+        # Add custom labels
+        for i, v in enumerate(grouped_data):
+            ax.text(v + 0.5, i, str(v), color='black', fontweight='bold')
+        # Display the plot in Streamlit
+        st.pyplot(fig)
         quote_text = " Un nombre plus élevé de femmes achètent des produits de la branche C par rapport aux hommes qui achètent la plupart des produits des branches A et B. Cela implique que la branche C est plus populaire chez les femmes et que les branches A et B sont plus populaires chez les hommes."
         quote_color = "#FFFFFF"
         st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
         st.markdown("""---""")
         st.markdown("<h3 style='font-weight: bold;'>Les notes des branches :</h3>", unsafe_allow_html=True)
-        # Create a boxplot of the ratings by branch
-        fig = sns.boxplot(x="Branch", y="Rating", data=sales)
-        # Add a title to the plot
-
-        fig.set_title("Les notes des branches :")
-        # Display the plot
-        st.pyplot(fig.figure)
+        # Create the box plot
+        fig, ax = plt.subplots()
+        sns.boxplot(x="Branch", y="Rating", data=sales, ax=ax)
+        plt.xlabel('Branch')
+        plt.ylabel('Rating')
+        plt.title('Ratings of the branches')
+        # Hide the matplotlib display
+        plt.close()
+        # Display the chart in Streamlit
+        st.pyplot(fig)
         quote_text = "La branche B a la note la plus basse parmi toutes les autres directions et les branches A et C ont la même notation."
         quote_color = "#FFFFFF"
         st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
         st.markdown("""---""")
+
         # Distribution of Customer type across branches
-        st.markdown("<h3 style='font-weight: bold;'>Répartition du type de client entre les succursales :</h3>", unsafe_allow_html=True)
-        # Create a DataFrame
-        data = {
-            'Branch': ['A', 'B', 'C'],
-            'Customer type': ['Retail', 'Commercial', 'Government'],
-            'Size': [10, 20, 30]
-        }
-        df = pd.DataFrame(data)
-        # Group the DataFrame by Branch and Customer type
-        df = df.groupby(['Branch', 'Customer type']).size().unstack(0)
-        # Plot a bar chart
-        st.bar_chart(df)
+        st.markdown("<h3 style='font-weight: bold;'>Répartition du type de client entre les branches :</h3>", unsafe_allow_html=True)
+        # Créer le graphique avec Seaborn
+        df = sales.groupby(['Branch', 'Customer type']).size().unstack(0)
+        # Create the bar chart
+        fig, ax = plt.subplots()
+        df.plot(kind='bar', ax=ax)
+        plt.xlabel('Customer type')
+        plt.ylabel('Count')
+        plt.legend(title='Branch', loc='upper right', bbox_to_anchor=(1.2, 1))
+        # Hide the matplotlib display
+        plt.close()
+        # Display the chart in Streamlit
+        st.pyplot(fig)
         quote_text = "Les clients membres achètent la plupart de leurs produits de la branche C et le moins de la branche B tandis que les clients normaux achètent beaucoup de la branche A puis de la branche B, mais moins de la branche C."
+        quote_color = "#FFFFFF"
+        st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
+
+        st.markdown("""---""")
+        st.markdown("<h3 style='font-weight: bold;'>Les ventes des différentes lignes de produits dans différentes branches:</h3>", unsafe_allow_html=True)
+        # Utiliser seaborn pour créer le countplot
+        sns_plot = sns.countplot(y='Product line', hue='Branch', data=sales)
+        st.pyplot(sns_plot.figure)
+        quote_text = " À partir du graphique à barres, nous pouvons observer que dans la Branche A, les articles pour la maison et le style de vie sont les plus vendus. Dans la Branche B, les articles de sport et de voyage ainsi que les accessoires de mode sont les plus vendus, tandis que dans la Branche C, les produits alimentaires et les boissons ainsi que les accessoires de mode sont les plus vendus."
+        quote_color = "#FFFFFF"
+        st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
+
+        st.markdown("""---""")
+        st.markdown("<h3 style='font-weight: bold;'>Les ventes dans chaque branche par type de paiement.:</h3>",unsafe_allow_html=True)
+        # Utiliser seaborn pour créer le barplot
+        sns_plot = sns.barplot(x='Total', hue='Payment', y='Branch', data=sales)
+        # Afficher le graphique dans Streamlit
+        st.pyplot(sns_plot.figure)
+        quote_text = " Dans la branche A, les ventes maximales sont générées par les paiements par carte de crédit. Dans la branche B, c'est par les paiements par portefeuille électronique (E-wallet), et dans la branche C, c'est également par les paiements par carte de crédit."
         quote_color = "#FFFFFF"
         st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
     def Vue_selon_les_produits():
@@ -217,7 +255,6 @@ if uploaded_file is not None:
         # Créer le graphique en camembert
         fig, ax = plt.subplots(figsize=(12, 6))
         ax.pie(productline, labels=productline.index, autopct='%1.1f%%')
-        ax.set_title("Distribution des lignes de produits")
         st.pyplot(fig)
 
         quote_text = "D'après le diagramme circulaire, il a été observé que les accessoires de mode étaient le produit le plus populaire dans toutes les branches, la nourriture et les boissons occupent la deuxième place, et les accessoires électroniques arrivent en troisième position dans la catégorie des produits."
@@ -245,6 +282,23 @@ if uploaded_file is not None:
         # Affichez le graphique dans Streamlit
         st.pyplot(fig.figure)
         quote_text = "Les femmes préfèrent acheter des articles pour la maison et le style de vie et génèrent des ventes maximales d'environ 380 dollars, tandis que les hommes sont plus enclins à acheter des produits de santé et de beauté et ont généré des ventes maximales d'environ 350 dollars."
+        quote_color = "#FFFFFF"
+        st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
+
+        st.markdown("""---""")
+
+        st.markdown(
+            "<h3 style='font-weight: bold;'>Ventes générées par genre grâce aux types de paiement:</h3>",unsafe_allow_html=True)
+        st.write("")
+        # Définissez les valeurs pour les variables x, hue et y
+        y = 'Total'
+        hue = 'Payment'
+        x = 'Gender'
+        # Créez le graphique à barres avec une orientation horizontale
+        fig = sns.barplot(x=y, y=x, hue=hue, data=sales, orient='h')
+        # Affichez le graphique dans Streamlit
+        st.pyplot(fig.figure)
+        quote_text = "Les femmes préfèrent acheter des articles en utilisant un portefeuille électronique et génèrent des ventes maximales d'environ 348 dollars, tandis que les hommes préfèrent faire leurs achats par carte de crédit et génèrent des ventes maximales d'environ 330 dollars."
         quote_color = "#FFFFFF"
         st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
     def Vue_selon_le_type_de_client():
@@ -275,22 +329,21 @@ if uploaded_file is not None:
         quote_text = " La plupart des clients achètent des accessoires électroniques en utilisant un portefeuille électronique qui génère des ventes maximales d'environ 350 dollars. Les clients préfèrent acheter des produits pour la maison et le style de vie en espèces et génèrent des ventes maximales d'environ 360 dollars. La carte de crédit est surtout utilisée pour l'achat d'accessoires électroniques et de produits sportifs et de voyage, et génère un maximum de ventes pour ces produits grâce à l'achat par carte de crédit."
         quote_color = "#FFFFFF"
         st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
+
         st.markdown("""---""")
-
-
-        st.markdown("<h3 style='font-weight: bold;'>Ventes générées par le genre par le biais de types de paiement:</h3>", unsafe_allow_html=True)
-        st.write("")
-        # Définissez les valeurs pour les variables x, hue et y
-        y = 'Total'
-        hue = 'Payment'
-        x = 'Gender'
-        # Créez le graphique à barres avec une orientation horizontale
-        fig = sns.barplot(x=y, y=x, hue=hue, data=sales, orient='h')
-        # Affichez le graphique dans Streamlit
+        st.markdown("<h3 style='font-weight: bold;'>Ventes générées par type de client en fonction des modes de paiement:</h3>", unsafe_allow_html=True)
+        # Créer le graphique à barres avec Seaborn
+        fig = sns.barplot(y='Total', hue='Payment', x='Customer type', data=sales)
+        plt.gca().invert_yaxis()
+        # Afficher le graphique dans Streamlit
         st.pyplot(fig.figure)
-        quote_text = "Les femmes préfèrent acheter des articles en utilisant un portefeuille électronique et génèrent des ventes maximales d'environ 348 dollars, tandis que les hommes préfèrent faire leurs achats par carte de crédit et génèrent des ventes maximales d'environ 330 dollars."
+        quote_text = "Les membres préfèrent acheter des articles en utilisant une carte de crédit et génèrent des ventes maximales d'environ 345 dollars, tandis que les clients normaux préfèrent faire leurs achats en espèces et génèrent des ventes maximales d'environ 330 dollars."
         quote_color = "#FFFFFF"
         st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
+
+
+
+
     def Vue_selon_le_temps():
         st.markdown("<h3 style='font-weight: bold;'>Ventes horaires:</h3>", unsafe_allow_html=True)
         st.write("")
@@ -343,6 +396,12 @@ if uploaded_file is not None:
         st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
     # Add an empty Markdown line to remove the space above the filter section
     # Add empty Markdown line to remove space above "Filtrez"
+    def pandas_report():
+        # Assuming 'sales' is your DataFrame
+        profile = ProfileReport(sales)
+        st.title("Pandas Profiling Report")
+        st_profile_report(profile)
+        st.markdown("""---""")
 
     city = st.sidebar.multiselect(
         "Selectionner la ville:",
@@ -369,10 +428,10 @@ if uploaded_file is not None:
             selected = option_menu(
                 menu_title="Votre menu",
                 # menu_title=None,
-                options=[" 🏠 Home"," 📈 Vue générale", " 🌳 Vue selon les branches", " 🛍️ Vue selon les produits",
-                         " 👥 Vue selon le type de client", " 📅 Vue selon le temps"],
-                icons=["🏠", "📊", "🌳", "🛍️", "👥", "📅"],
-                menu_icon=["home","bar_chart",], # option
+                options=[" 🏠 Home", " 📈 Vue générale", " 🌳 Vue selon les branches", " 🛍️ Vue selon les produits",
+                         " 👥 Vue selon le type de client", " 📅 Vue selon le temps"," 📑 Rapport d'analyse"],
+                icons=["🏠", "📊", "🌳", "🛍️", "👥", "📅","📑"],
+                menu_icon=["home", "bar_chart", ],  # option
                 default_index=0,  # option
             )
 
@@ -388,8 +447,11 @@ if uploaded_file is not None:
             Vue_selon_le_type_de_client()
         if selected == " 📅 Vue selon le temps":
             Vue_selon_le_temps()
+        if selected==" 📑 Rapport d'analyse":
+            pandas_report()
     # print side bar
     sideBar()
+
 
     # sub_option = st.selectbox("Selectionner une sous-option",["Vue générale", "Vue selon les branches", "Vue selon les produits","Vue selon le type de client", "Vue selon le temps"])
     # st.markdown(f"<h1 style='font-weight: bold;'>{sub_option}</h1>", unsafe_allow_html=True)
