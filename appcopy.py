@@ -354,10 +354,11 @@ if uploaded_file is not None:
         fig, ax = plt.subplots()
         # Create the line plot
         sns.lineplot(x='Hour', y='Total', data=sales, ax=ax)
-        # Set the title of the plot
-        ax.set_title("Hourly Sales")
         # Display the plot in Streamlit
         st.pyplot(fig)
+        quote_text = "Les ventes maximales sont générées vers 14h."
+        quote_color = "#FFFFFF"
+        st.markdown(f'<blockquote style="color:{quote_color};">{quote_text}</blockquote>', unsafe_allow_html=True)
         st.markdown("""---""")
         st.markdown("<h3 style='font-weight: bold;'>Ventes quotidiennes:</h3>", unsafe_allow_html=True)
         # Convert Date column to datetime
@@ -368,10 +369,8 @@ if uploaded_file is not None:
         fig, ax = plt.subplots()
         # Create the line plot
         sns.lineplot(x='Day', y='Total', data=sales, ax=ax)
-        # Set the title of the plot
-        ax.set_title("Daily Sales")
-        # Display the plot in Streamlit
         st.pyplot(fig)
+
         st.markdown("""---""")
         st.markdown("<h3 style='font-weight: bold;'>Ventes mensuelles:</h3>", unsafe_allow_html=True)
         # Convert Date column to datetime
