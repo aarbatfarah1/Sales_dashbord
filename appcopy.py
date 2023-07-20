@@ -10,7 +10,7 @@ from pandas_profiling import ProfileReport
 
 
 
-st.set_page_config(page_title="TAnalyse des Performances de Ventes", page_icon="📊",layout="wide")
+st.set_page_config(page_title="Analyse des Performances de Ventes", page_icon="📊",layout="wide")
 
 # ---- HIDE STREAMLIT STYLE ----
 hide_st_style = """
@@ -26,7 +26,7 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # ---- MAINPAGE ----
-st.title("📊 Tableau de bord des ventes")
+st.title("📊 Analyse des Performances de Ventes")
 st.markdown("##")
 
 # Afficher le sélecteur de fichiers pour importer le fichier CSV
